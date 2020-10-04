@@ -7,3 +7,7 @@ def move_to_element_by_xpath(driver, selector):
     actions.move_to_element(elem)
     actions.perform()
 
+
+def make_screenshot(driver, name):
+    driver.save_screenshot(name + ".png")
+
