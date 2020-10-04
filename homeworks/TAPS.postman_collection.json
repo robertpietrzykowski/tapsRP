@@ -1,0 +1,394 @@
+{
+	"info": {
+		"_postman_id": "3f0442e2-b7cb-4e6c-8667-1b6af3170aa8",
+		"name": "TAPS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/posts",
+			"item": [
+				{
+					"name": "Get all posts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a38a69d2-51d2-4675-9e5d-201ccc4b2896",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Verify if json length is equal to 100\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.length).to.eql(100);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/posts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"posts"
+							]
+						},
+						"description": "Requests which will get all posts from /posts endpoint."
+					},
+					"response": []
+				},
+				{
+					"name": "Get first post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "457ac210-30a1-406b-b08a-e5d5811726ec",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Verify if JSON contains first post\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.id).to.eql(1);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "000e0ecc-183c-4d0b-8153-38559f0f1701",
+								"exec": [
+									"pm.globals.set(\"post\", \"1\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/posts/{{post}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"posts",
+								"{{post}}"
+							]
+						},
+						"description": "Requests which will get first post from /posts endpoint."
+					},
+					"response": []
+				},
+				{
+					"name": "Create new post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "6f4a0a76-9642-40f1-b449-d81c45b5025c",
+								"exec": [
+									"var host = pm.globals.get(\"url\") + \"/posts\" ",
+									"",
+									"pm.sendRequest(host, function (err, response) {",
+									"    var jsonData = response.json();",
+									"    var newPostID = jsonData.length + 1;",
+									"",
+									"    pm.globals.set(\"newPostID\", newPostID);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "fe705ae1-1297-4a8c-98f1-f202239c8b32",
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(300);",
+									"});",
+									"",
+									"pm.test(\"Check if post ID is 101\", function () {",
+									"    pm.expect(pm.response.json().id).to.eql(parseInt(pm.globals.get(\"newPostID\")));",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"userId\": 1,\n        \"id\": {{newPostID}},\n        \"title\": \"sunt aut facere repellat provident occaecati excepturi optio reprehenderit\",\n        \"body\": \"quia et suscipit\\nsuscipit recusandae consequuntur expedita et cum\\nreprehenderit molestiae ut ut quas totam\\nnostrum rerum est autem sunt rem eveniet architecto\"\n    }\n]"
+						},
+						"url": {
+							"raw": "{{url}}/posts",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"posts"
+							]
+						},
+						"description": "Create new post on /posts endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "Change post id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5a39cbcf-64af-4b91-863d-c063f130a1b4",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 300ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(300);",
+									"});",
+									"",
+									"pm.test(\"Check if post ID is changed to 1010\", function () {",
+									"    pm.expect(pm.response.json().id).to.eql(1);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"userId\": 1,\n        \"id\": 1010,\n        \"title\": \"sunt aut facere repellat provident occaecati excepturi optio reprehenderit\",\n        \"body\": \"quia et suscipit\\nsuscipit recusandae consequuntur expedita et cum\\nreprehenderit molestiae ut ut quas totam\\nnostrum rerum est autem sunt rem eveniet architecto\"\n\n    }\n]"
+						},
+						"url": {
+							"raw": "{{url}}/posts/{{post}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"posts",
+								"{{post}}"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "Change userID section of one post on /posts endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete post",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "48fd631e-17ac-49b8-bc81-6274d39aed10",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(300);",
+									"});",
+									"",
+									"pm.test(\"Response body is empty\", function (){",
+									"    pm.expect(pm.response.json()).to.be.empty === true;",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/posts/{{post}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"posts",
+								"{{post}}"
+							]
+						},
+						"description": "Delete single post from /post endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "Patch single post",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/posts/{{post}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"posts",
+								"{{post}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "/comments",
+			"item": [
+				{
+					"name": "Get all comments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8c596a23-081c-4f88-9943-7dba9c2be16a",
+								"exec": [
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Verify if json length with comments is equal to 500\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.length).to.eql(500);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/comments",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"comments"
+							]
+						},
+						"description": "Get all comments created on /comments endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all comments for single post",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c6f4a210-45df-4df8-adaf-fe6cb7cd78b3",
+								"exec": [
+									"pm.globals.set(\"post\", \"1\");"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "55a785ff-dc22-4451-b350-25f4ac909087",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									"",
+									"pm.test(\"Verify if JSON contains comments for first post\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.length) > 0;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/comments?postId={{post}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"comments"
+							],
+							"query": [
+								{
+									"key": "postId",
+									"value": "{{post}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
