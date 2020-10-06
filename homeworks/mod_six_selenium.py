@@ -8,9 +8,7 @@ class Data:
     URL = "https://fabrykatestow.pl"
 
     #ELEMENTS REGION
-    TAPS_COURSE_MENU = "#menu-item-506 > a"
-    PAWEL_PICTURE = '/html/body/div/main/div/div/div/div/div/div/div/section[9]/div[2]/div/' \
-                    'div/div/div/section/div/div/div[1]/div/div/div[1]/div/div/img'
+
     #ENDREGION
 
 
